@@ -160,7 +160,7 @@ func TestHTTPFormat_FromRequest(t *testing.T) {
 				TraceID:      trace.TraceID{70, 58, 195, 92, 159, 100, 19, 173, 72, 72, 90, 57, 83, 187, 97, 36},
 				SpanID:       trace.SpanID{0, 32, 0, 0, 0, 0, 0, 1},
 				TraceOptions: trace.TraceOptions(1),
-				WasmPath: "/cartservice"
+				WasmPath:     "/cartservice",
 			},
 			wantOk: true,
 		},
@@ -209,6 +209,21 @@ func TestHTTPFormat_ToRequest(t *testing.T) {
 				"X-B3-TraceId": "463ac35c9f6413ad48485a3953bb6124",
 				"X-B3-SpanId":  "0020000000000001",
 				"X-B3-Sampled": "0",
+			},
+		},
+		{
+			name: "valid traceID, header ID, sampled=0, WasmPath=/carservice",
+			sc: trace.SpanContext{
+				TraceID:      trace.TraceID{70, 58, 195, 92, 159, 100, 19, 173, 72, 72, 90, 57, 83, 187, 97, 36},
+				SpanID:       trace.SpanID{0, 32, 0, 0, 0, 0, 0, 1},
+				TraceOptions: trace.TraceOptions(0),
+				WasmPath:     "/cartservice",
+			},
+			wantHeaders: map[string]string{
+				"X-B3-TraceId": "463ac35c9f6413ad48485a3953bb6124",
+				"X-B3-SpanId":  "0020000000000001",
+				"X-B3-Sampled": "0",
+				"X-Wasm-Path":  "/cartservice",
 			},
 		},
 	}

@@ -57,12 +57,12 @@ func (f *HTTPFormat) SpanContextFromRequest(req *http.Request) (sc trace.SpanCon
 	}
 	sampled, _ := ParseSampled(req.Header.Get(SampledHeader))
 
-	path := req.Header.Get(WasmPathHeader))
+	path := req.Header.Get(WasmPathHeader)
 	return trace.SpanContext{
 		TraceID:      tid,
 		SpanID:       sid,
 		TraceOptions: sampled,
-		WasmPath: 	  path,
+		WasmPath:     path,
 	}, true
 }
 
