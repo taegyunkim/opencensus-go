@@ -146,6 +146,24 @@ func TestHTTPFormat_FromRequest(t *testing.T) {
 			},
 			wantOk: true,
 		},
+		{
+			name: "Wasm header propagation",
+			makeReq: func() *http.Request {
+				req, _ := http.NewRequest("GET", "http://example.com", nil)
+				req.Header.Set(TraceIDHeader, "463ac35c9f6413ad48485a3953bb6124")
+				req.Header.Set(SpanIDHeader, "0020000000000001")
+				req.Header.Set(SampledHeader, "1")
+				req.Header.Set(WasmPathHeader, "/cartservice")
+				return req
+			},
+			wantSc: trace.SpanContext{
+				TraceID:      trace.TraceID{70, 58, 195, 92, 159, 100, 19, 173, 72, 72, 90, 57, 83, 187, 97, 36},
+				SpanID:       trace.SpanID{0, 32, 0, 0, 0, 0, 0, 1},
+				TraceOptions: trace.TraceOptions(1),
+				WasmPath: "/cartservice"
+			},
+			wantOk: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

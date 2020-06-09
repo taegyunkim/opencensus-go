@@ -90,6 +90,7 @@ type SpanContext struct {
 	SpanID       SpanID
 	TraceOptions TraceOptions
 	Tracestate   *tracestate.Tracestate
+	WasmPath     string
 }
 
 type contextKey struct{}

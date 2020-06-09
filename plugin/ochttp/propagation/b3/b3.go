@@ -27,9 +27,10 @@ import (
 
 // B3 headers that OpenCensus understands.
 const (
-	TraceIDHeader = "X-B3-TraceId"
-	SpanIDHeader  = "X-B3-SpanId"
-	SampledHeader = "X-B3-Sampled"
+	TraceIDHeader  = "X-B3-TraceId"
+	SpanIDHeader   = "X-B3-SpanId"
+	SampledHeader  = "X-B3-Sampled"
+	WasmPathHeader = "X-Wasm-Path"
 )
 
 // HTTPFormat implements propagation.HTTPFormat to propagate
@@ -55,10 +56,13 @@ func (f *HTTPFormat) SpanContextFromRequest(req *http.Request) (sc trace.SpanCon
 		return trace.SpanContext{}, false
 	}
 	sampled, _ := ParseSampled(req.Header.Get(SampledHeader))
+
+	path := req.Header.Get(WasmPathHeader))
 	return trace.SpanContext{
 		TraceID:      tid,
 		SpanID:       sid,
 		TraceOptions: sampled,
+		WasmPath: 	  path,
 	}, true
 }
 
@@ -120,4 +124,5 @@ func (f *HTTPFormat) SpanContextToRequest(sc trace.SpanContext, req *http.Reques
 		sampled = "0"
 	}
 	req.Header.Set(SampledHeader, sampled)
+	req.Header.Set(WasmPathHeader, sc.WasmPath)
 }
